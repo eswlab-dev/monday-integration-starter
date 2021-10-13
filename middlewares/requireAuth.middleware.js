@@ -1,8 +1,8 @@
-const logger = require('../services/logger.service')
+const logger = require("../services/logger.service");
 
 async function requireAuth(req, res, next) {
   if (!req.session || !req.session.user) {
-    res.status(401).end('Unauthorized!');
+    res.status(401).end("Unauthorized!");
     return;
   }
   next();
@@ -17,20 +17,16 @@ async function requireAuth(req, res, next) {
 //   next();
 // }
 
-
 // module.exports = requireAuth;
 
 module.exports = {
   authenticationMiddleware,
-  requireAuth
+  // requireAuth,
   // requireAdmin
-}
-
-
-
+};
 
 async function authenticationMiddleware(req, res, next) {
-  const jwt = require('jsonwebtoken');
+  const jwt = require("jsonwebtoken");
 
   try {
     let { authorization } = req.headers;
@@ -41,12 +37,11 @@ async function authenticationMiddleware(req, res, next) {
       authorization,
       process.env.MONDAY_SIGNING_SECRET
     );
+    console.log("🚀 ~ accountId", accountId, "userid", userId);
     req.session = { accountId, userId, backToUrl, shortLivedToken };
     next();
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'not authenticated' });
+    res.status(500).json({ error: "not authenticated" });
   }
 }
-
-
